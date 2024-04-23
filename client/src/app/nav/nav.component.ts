@@ -1,21 +1,25 @@
 import { Component, OnInit } from '@angular/core';
+import { AccountService } from '../_services/account.service';
 
 @Component({
   selector: 'app-nav',
   templateUrl: './nav.component.html',
-  styleUrls: ['./nav.component.css']
+  styleUrls: ['./nav.component.css'],
 })
-export class NavComponent implements OnInit{
+export class NavComponent implements OnInit {
+  model: any = {};
+  loggedIn = false;
+  constructor(private accountService: AccountService) {}
 
-  model:any = {}
+  ngOnInit(): void {}
 
-  constructor(){}
-
-  ngOnInit(): void {
-    
-  }
-
-  login(){
-    console.log(this.model)
+  login() {
+    this.accountService.login(this.model).subscribe({
+      next: (respone) => {
+        console.log(respone);
+        this.loggedIn = true;
+      },
+      error: (error) => console.log(error),
+    });
   }
 }
