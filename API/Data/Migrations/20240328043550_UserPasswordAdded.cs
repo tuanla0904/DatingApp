@@ -15,6 +15,12 @@ namespace API.Data.Migrations
                 table: "Users",
                 type: "BLOB",
                 nullable: true);
+
+                migrationBuilder.AddColumn<byte[]>(
+                name: "PasswordSalt",
+                table: "Users",
+                type: "BLOB",
+                nullable: true);
         }
 
         /// <inheritdoc />
@@ -22,6 +28,9 @@ namespace API.Data.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "PasswordHash",
+                table: "Users");
+            migrationBuilder.DropColumn(
+                name: "PasswordSalt",
                 table: "Users");
         }
     }
