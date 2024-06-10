@@ -3,7 +3,7 @@ import { Photo } from './photo';
 export interface Member {
   userName: string;
   gender: string;
-  dateOfBirth: Date;
+  age: Date;
   knownAs: string;
   created: Date;
   lastActive: Date;
