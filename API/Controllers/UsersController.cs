@@ -29,8 +29,16 @@ namespace API.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<PagedList<MemberDto>>> GetUsers(UserParams userParams)
+        public async Task<ActionResult<PagedList<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
         {
+            var currentUser = await _userRepository.GetUserByUsernameAsync(User.GetUserName());
+            userParams.CurrentUsername = currentUser.Username;
+
+            if (string.IsNullOrEmpty(userParams.Gender))
+            {
+                userParams.Gender = currentUser.Gender == "male" ? "female" : "male";
+            }
+
             var users = await _userRepository.GetMembersAsync(userParams);
 
             Response.AddPaginationHeader(new PaginationHeader(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages));
@@ -81,7 +89,7 @@ namespace API.Controllers
 
             if (await _userRepository.SaveAllAsync())
             {
-                return CreatedAtAction(nameof(GetUser), new { username = user.UserName }, _mapper.Map<PhotoDto>(photo));
+                return CreatedAtAction(nameof(GetUser), new { username = user.Username }, _mapper.Map<PhotoDto>(photo));
             }
 
             return BadRequest("Problem adding photo");
