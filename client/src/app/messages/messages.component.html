@@ -45,12 +45,14 @@
     </thead>
     <tbody class="align-middle">
       <tr
+        [hidden]="loading"
         *ngFor="let message of messages"
         routerLink="{{
           container === 'Outbox'
             ? '/members' + message.recipientUsername
             : '/members/' + message.senderUsername
-        }}" [queryParams]="{tab: 'Messages'}"
+        }}"
+        [queryParams]="{ tab: 'Messages' }"
       >
         <td>{{ message.content }}</td>
         <td>
@@ -73,7 +75,13 @@
         </td>
         <td>{{ message.messageSent | timeago }}</td>
         <td>
-          <button class="btn btn-danger">Delete</button>
+          <button
+            (click)="$event.stopPropagation()"
+            (click)="deleteMessage(message.id)"
+            class="btn btn-danger"
+          >
+            Delete
+          </button>
         </td>
       </tr>
     </tbody>
@@ -82,7 +90,7 @@
 
 <div
   class="d-flex justify-content-center"
-  *ngIf="pagination && messages && messages.length > 0"
+  *ngIf="!loading && pagination && messages && messages.length > 0"
 >
   <pagination
     [boundaryLinks]="true"
