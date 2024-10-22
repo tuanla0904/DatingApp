@@ -44,10 +44,14 @@ namespace API.Controllers
 
             if (!result.Succeeded) return BadRequest(result.Errors.First().Description);
 
+            var roleResult = await _userManager.AddToRoleAsync(user, "Member");
+
+            if (!result.Succeeded) return BadRequest(result.Errors);
+
             return new UserDto
             {
                 Username = user.UserName,
-                Token = _tokenService.CreateToken(user),
+                Token = await _tokenService.CreateToken(user),
                 KnownAs = user.KnownAs,
                 Gender = user.Gender,
             };
@@ -65,17 +69,17 @@ namespace API.Controllers
             if (!result) return Unauthorized("Invalid password");
             // using var hmac = new HMACSHA512(user.PasswordSalt);
 
-                // var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
+            // var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
 
-                // for (int i = 0; i < computedHash.Length; i++)
-                // {
-                //     if (computedHash[i] != user.PasswordHash[i]) return Unauthorized("invalid password");
-                // }
+            // for (int i = 0; i < computedHash.Length; i++)
+            // {
+            //     if (computedHash[i] != user.PasswordHash[i]) return Unauthorized("invalid password");
+            // }
 
             return new UserDto
             {
                 Username = user.UserName,
-                Token = _tokenService.CreateToken(user),
+                Token = await _tokenService.CreateToken(user),
                 PhotoUrl = user.Photos?.FirstOrDefault(x => x.IsMain)?.Url,
                 KnownAs = user.KnownAs,
                 Gender = user.Gender,

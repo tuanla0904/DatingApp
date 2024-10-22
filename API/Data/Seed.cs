@@ -40,10 +40,10 @@ namespace API.Data
 
             var admin = new AppUser
             {
-                UserName = "Admin",
+                UserName = "admin",
             };
 
-            await userManager.CreateAsync(admin, "Passw0rd");
+            await userManager.CreateAsync(admin, "Pa$$w0rd");
             await userManager.AddToRolesAsync(admin, new[] { "Admin", "Moderator" });
         }
     }
