@@ -1,13 +1,11 @@
-using System.Text;
 using API;
 using API.Data;
 using API.Entities;
 using API.Extensions;
 using API.Middleware;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using API.SignalR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -24,12 +22,13 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 // app.UseAuthorization();
 
-app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));
+app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("https://localhost:4200"));
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<PresenceHub>("hubs/presence");
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
 try
